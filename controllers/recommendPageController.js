@@ -1,24 +1,29 @@
-const db = require("../config/db");
+const db = require("../db/connection");
 
-// 날씨 기반 추천 데이터 가져오기
 const getRecommendations = async (req, res) => {
-  const { weather } = req.query; // 날씨 정보를 쿼리 파라미터로 받음
+  const { weatherCode } = req.query;
 
-  if (!weather) {
-    return res.status(400).json({ error: "날씨 정보를 제공해주세요." });
+  if (!weatherCode) {
+    return res.status(400).json({ error: "날씨 코드가 필요합니다." });
   }
 
   try {
-    // DB에서 날씨 조건에 맞는 알코올 추천 데이터 가져오기
-    const query = `
-      SELECT * FROM alcohols
-      WHERE weather = ? OR weather = 0`; // weather=0은 모든 날씨에서 추천
-    const [rows] = await db.execute(query, [weather]);
+    const recommendations = await db.alcohols.findAll({
+      where: {
+        weather: weatherCode, // 날씨 코드와 일치하는 데이터만 가져옴
+      },
+    });
 
-    res.status(200).json(rows); // 추천 데이터 반환
+    if (recommendations.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "해당 날씨에 맞는 추천 와인이 없습니다." });
+    }
+
+    res.json(recommendations);
   } catch (error) {
-    console.error("Error fetching recommendations:", error);
-    res.status(500).json({ message: "추천 데이터를 가져오는 데 실패했습니다." });
+    console.error("Error fetching recommendations:", error.message);
+    res.status(500).json({ error: "추천 데이터를 가져오는 중 문제가 발생했습니다." });
   }
 };
 
