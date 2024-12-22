@@ -1,15 +1,15 @@
 const db = require("../db/connections");
 
 exports.getMyPage = (req, res) => {
-  const userId = req.user.id; // 로그인한 사용자 ID
+  const userName = req.user?.name; // 로그인한 사용자 이름
 
-  if (!userId) {
+  if (!userName) {
     return res.status(401).send("Unauthorized");
   }
 
   // 사용자 정보 가져오기
-  const userQuery = "SELECT name, profile_image FROM users WHERE id = ?";
-  db.query(userQuery, [userId], (err, userResults) => {
+  const userQuery = "SELECT id, name, profile_image FROM users WHERE name = ?";
+  db.query(userQuery, [userName], (err, userResults) => {
     if (err) {
       return res.status(500).send("Error fetching user information");
     }
@@ -22,7 +22,7 @@ exports.getMyPage = (req, res) => {
       JOIN likes l ON a.id = l.alcohol_id
       WHERE l.user_id = ?`;
 
-    db.query(alcoholQuery, [userId], (err, alcoholResults) => {
+    db.query(alcoholQuery, [user.id], (err, alcoholResults) => {
       if (err) {
         return res.status(500).send("Error fetching liked alcohols");
       }
