@@ -1,7 +1,8 @@
 const db = require("../db/connections");
 
 exports.getMyPage = (req, res) => {
-  const userName = req.user?.name; // 로그인한 사용자 이름
+  // 로컬스토리지에서 저장된 닉네임을 사용
+  const userName = req.query.nickname;
 
   if (!userName) {
     return res.status(401).send("Unauthorized");
@@ -12,6 +13,10 @@ exports.getMyPage = (req, res) => {
   db.query(userQuery, [userName], (err, userResults) => {
     if (err) {
       return res.status(500).send("Error fetching user information");
+    }
+
+    if (!userResults.length) {
+      return res.status(404).send("User not found");
     }
 
     const user = userResults[0];
