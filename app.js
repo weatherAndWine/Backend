@@ -1,6 +1,6 @@
 const express = require("express");
 const session = require("express-session");
-const myPageRoutes = require("./alcohol/routes/myPage");
+const myPageRoutes = require("./routes/myPage");
 const dotenv = require("dotenv");
 
 dotenv.config();

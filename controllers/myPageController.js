@@ -1,4 +1,4 @@
-const db = require("../db/connection");
+const db = require("../db/connections");
 
 exports.getMyPage = (req, res) => {
   const userId = req.user.id; // 로그인한 사용자 ID
