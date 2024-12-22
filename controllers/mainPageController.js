@@ -1,21 +1,23 @@
 const axios = require("axios");
 
-const OPENWEATHER_API_KEY = "ea3a95c90380bc25309035066fc9ab7f"; // 여기에 OpenWeather API 키를 입력하세요.
+const OPENWEATHER_API_KEY = "1fe26cb2ddc3c398db0efe1693fe598f"; // 여기에 OpenWeather API 키를 입력하세요.
 
 // 날씨 타입 매핑 함수
-const mapWeatherType = (main) => {
-  switch (main.toLowerCase()) {
-    case "clear":
-      return "맑음";
-    case "clouds":
-      return "구름";
-    case "rain":
-    case "drizzle":
-      return "비";
-    case "snow":
-      return "눈";
-    default:
-      return "알 수 없음";
+const mapWeatherType = (weatherCode) => {
+  if (weatherCode >= 200 && weatherCode < 300) {
+    return "비"; // 뇌우
+  } else if (weatherCode >= 300 && weatherCode < 400) {
+    return "비"; // 이슬비
+  } else if (weatherCode >= 500 && weatherCode < 600) {
+    return "비"; // 비
+  } else if (weatherCode >= 600 && weatherCode < 700) {
+    return "눈";
+  } else if (weatherCode === 800) {
+    return "맑음";
+  } else if (weatherCode > 800 && weatherCode < 900) {
+    return "구름";
+  } else {
+    return "알 수 없음"; // 기타
   }
 };
 
